@@ -8,6 +8,7 @@ Este projeto foi criado com o objetivo de praticar conceitos de backend como:
 - Rotas REST
 - Manipulação de dados
 - Tipagem com TypeScript
+- Tratamento global de erros
 
 ---
 
@@ -16,6 +17,8 @@ Este projeto foi criado com o objetivo de praticar conceitos de backend como:
 - Node.js
 - Express
 - TypeScript
+- Prisma
+- PostgreSQL
 
 ---
 
@@ -24,20 +27,29 @@ Este projeto foi criado com o objetivo de praticar conceitos de backend como:
 #### Clone o repositório:
 
 ```bash
-git clone https://github.com/dougl-dias/minha-primeira-api-express.git
+git clone https://github.com/dougl-dias/notes-api.git
 ```
 
 #### Entre na pasta
+
 ```bash
-cd minha-primeira-api-express
+cd notes-api
 ```
 
 #### Instale as dependências
+
 ```bash
 npm install
 ```
 
+#### Rode o comando
+
+```bash
+npx prisma generate
+```
+
 #### Execute o projeto
+
 ```bash
 npm run watch
 ```
@@ -49,7 +61,9 @@ npm run watch
 ```http
   GET /
 ```
+
 #### Resposta:
+
 ```json
 {
   "status": "ok"
@@ -57,12 +71,15 @@ npm run watch
 ```
 
 ### Anotações
+
 #### Listar todas as anotações
+
 ```http
   GET /notes/
 ```
 
 #### Resposta
+
 ```json
 [
   {
@@ -79,11 +96,13 @@ npm run watch
 ---
 
 #### Buscar anotação por ID
+
 ```http
   GET /notes/${id}
 ```
 
 #### Resposta:
+
 ```json
 {
   "id": 1,
@@ -98,22 +117,25 @@ npm run watch
 ---
 
 #### Criar nova anotação
+
 ```http
   POST /notes/
 ```
 
 #### Body:
+
 ```json
 {
   "title": "Estudar Node.js",
   "content": "Revisar conceitos",
   "category": "Estudos",
-  "color": "yellow",
+  "color": "yellow", // enum (yellow, green, cyan, pink, purple, gray)
   "userId": 1
 }
 ```
 
 #### Resposta:
+
 ```json
 {
   "id": 6,
@@ -128,11 +150,13 @@ npm run watch
 ---
 
 #### Atualizar nota
+
 ```http
   PATCH /notes/${id}
 ```
 
 #### Body:
+
 ```json
 {
   "title": "Título atualizado"
@@ -140,6 +164,7 @@ npm run watch
 ```
 
 #### Resposta:
+
 ```json
 {
   "id": 1,
@@ -154,11 +179,13 @@ npm run watch
 ---
 
 #### Deletar anotação
+
 ```http
 DELETE /notes/${id}
 ```
 
 #### Resposta:
+
 ```http
 204 No Content
 ```
@@ -168,8 +195,9 @@ DELETE /notes/${id}
 # Melhorias futuras
 
 - [x] Refatoração e organização do código (controllers, services e repositories)
-- [ ] Banco de dados PostgreSQL
-- [ ] Uso de ORM (Prisma)
+- [x] Banco de dados PostgreSQL
+- [x] Uso de ORM (Prisma)
 - [ ] Autenticação com JWT
 - [ ] Validação com Zod
 - [ ] Padronização do código com ESLint e Prettier
+- [ ] Tratamento global de erros
