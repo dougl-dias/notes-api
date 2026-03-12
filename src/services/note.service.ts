@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma.js'
 
 import type { Note } from '../generated/prisma/client.js'
-import type { NoteDTO, UserId } from '../schema/note.schema.js'
+import type { NoteDTO, NoteUserId } from '../schema/schemas.js'
 
 const findAllNotes = async (): Promise<Note[]> => {
   return prisma.note.findMany()
@@ -13,23 +13,14 @@ const findNoteById = async (id: number): Promise<Note | null> => {
   })
 }
 
-const createNote = async (data: NoteDTO & UserId): Promise<Note> => {
-  const newNote: any = {
-    title: data.title,
-    content: data.content ?? '',
-    category: data.category,
-    color: data.color ?? 'gray',
-    userId: Number(data.userId)
-  }
-
+const createNote = async (data: NoteDTO & NoteUserId): Promise<Note> => {
   return prisma.note.create({
-    data: newNote
+    data
   })
 }
 
 const updateNote = async (id: number, data: any): Promise<Note | null> => {
   const note = await findNoteById(id)
-
   if (!note) return null
 
   return prisma.note.update({
@@ -38,7 +29,10 @@ const updateNote = async (id: number, data: any): Promise<Note | null> => {
   })
 }
 
-const deleteNote = (id: number): Promise<Note> => {
+const deleteNote = async (id: number): Promise<Note | null> => {
+  const note = await findNoteById(id)
+  if (!note) return null
+
   return prisma.note.delete({
     where: { id }
   })

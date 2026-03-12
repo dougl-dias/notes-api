@@ -1,21 +1,21 @@
 import {
-  createNote,
-  deleteNote,
-  findAllNotes,
-  findNoteById,
-  updateNote
-} from '../services/note.service.js'
+  createUser,
+  deleteUser,
+  findAllUsers,
+  findUserById,
+  updateUser
+} from '../services/user.service.js'
 
 import { parseId } from '../util/validateId.js'
 
 import type { Request, Response } from 'express'
-import type { NoteDTO, NoteUserId } from '../schema/schemas.js'
+import type { UserDTO } from '../schema/schemas.js'
 
-const allowedFields = ['title', 'content', 'category', 'color']
+const allowedFields = ['name', 'email', 'password']
 
 const getAll = async (req: Request, res: Response) => {
   try {
-    const response = await findAllNotes()
+    const response = await findAllUsers()
     return res.status(200).json(response)
   } catch (error) {
     console.log(error)
@@ -29,10 +29,10 @@ const getById = async (req: Request, res: Response) => {
 
     if (!id) return res.status(400).json({ message: 'ID Inválido' })
 
-    const response = await findNoteById(id)
+    const response = await findUserById(id)
 
     if (!response) {
-      return res.status(404).json({ message: 'Anotação não encontrada' })
+      return res.status(404).json({ message: 'Usuário não encontrado' })
     }
 
     return res.status(200).json(response)
@@ -44,25 +44,21 @@ const getById = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
   try {
-    const body: NoteDTO & NoteUserId = { ...req.body }
+    const data: UserDTO = { ...req.body }
 
-    if (body.title === undefined) {
-      return res.status(400).json({ message: 'Título é obrigatório' })
+    if (data.name === undefined) {
+      return res.status(400).json({ message: 'Nome é obrigatório' })
     }
 
-    if (body.category === undefined) {
-      return res.status(400).json({ message: 'Categoria é obrigatório' })
+    if (data.email === undefined) {
+      return res.status(400).json({ message: 'E-mail é obrigatório' })
     }
 
-    if (body.userId === undefined) {
-      return res.status(400).json({ message: 'ID do usuário é obrigatório' })
+    if (data.password === undefined) {
+      return res.status(400).json({ message: 'Senha é obrigatório' })
     }
 
-    const response = await createNote({
-      ...body,
-      content: body.content ?? '',
-      color: body.color
-    })
+    const response = await createUser(data)
 
     return res.status(201).json(response)
   } catch (error) {
@@ -77,14 +73,14 @@ const update = async (req: Request, res: Response) => {
 
     if (!id) return res.status(400).json({ message: 'ID Inválido' })
 
-    const data: Partial<NoteDTO> = Object.fromEntries(
+    const data: Partial<UserDTO> = Object.fromEntries(
       Object.entries(req.body).filter(([key]) => allowedFields.includes(key))
     )
 
-    const response = await updateNote(id, data)
+    const response = await updateUser(id, data)
 
     if (!response) {
-      return res.status(404).json({ message: 'Anotação não encontrada' })
+      return res.status(404).json({ message: 'Usuário não encontrado' })
     }
 
     return res.status(200).json(response)
@@ -100,10 +96,10 @@ const remove = async (req: Request, res: Response) => {
 
     if (!id) return res.status(400).json({ message: 'ID Inválido' })
 
-    const response = await deleteNote(id)
+    const response = await deleteUser(id)
 
     if (!response) {
-      return res.status(404).json({ message: 'Anotação não encontrada' })
+      return res.status(404).json({ message: 'Usuário não encontrado' })
     }
 
     return res.status(204).send()

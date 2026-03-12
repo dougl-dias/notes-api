@@ -7,6 +7,12 @@ export type NoteDTO = {
   color: NoteColor
 }
 
-export type UserId = {
+export type NoteUserId = {
   userId: number
+}
+
+export type UserDTO = {
+  name: string
+  email: string
+  password: string
 }

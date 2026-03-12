@@ -192,6 +192,118 @@ DELETE /notes/${id}
 
 ---
 
+### Usuários
+
+#### Listar todos os usuários
+
+```http
+  GET /users/
+```
+
+#### Resposta
+
+```json
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@exemple.com",
+    "password": "admin123"
+  }
+]
+```
+
+---
+
+#### Buscar usuário por ID
+
+```http
+  GET /users/${id}
+```
+
+#### Resposta:
+
+```json
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john@exemple.com",
+  "password": "admin123"
+}
+```
+
+---
+
+#### Criar novo usuário
+
+```http
+  POST /users/
+```
+
+#### Body:
+
+```json
+{
+  "name": "Mary Jane",
+  "email": "mary@exemple.com",
+  "password": "admin123"
+}
+```
+
+#### Resposta:
+
+```json
+{
+  "id": 5,
+  "name": "Mary Jane",
+  "email": "mary@exemple.com",
+  "password": "admin123"
+}
+```
+
+---
+
+#### Atualizar usuário
+
+```http
+  PATCH /users/${id}
+```
+
+#### Body:
+
+```json
+{
+  "email": "mary.jane@exemple.com"
+}
+```
+
+#### Resposta:
+
+```json
+{
+  "id": 5,
+  "name": "Mary Jane",
+  "email": "mary.jane@exemple.com",
+  "password": "admin123"
+}
+```
+
+---
+
+#### Deletar anotação
+
+```http
+DELETE /users/${id}
+```
+
+#### Resposta:
+
+```http
+204 No Content
+```
+
+---
+
 # Melhorias futuras
 
 - [x] Refatoração e organização do código (controllers, services e repositories)
@@ -201,3 +313,4 @@ DELETE /notes/${id}
 - [ ] Validação com Zod
 - [ ] Padronização do código com ESLint e Prettier
 - [ ] Tratamento global de erros
+- [ ] Filtro de dados
