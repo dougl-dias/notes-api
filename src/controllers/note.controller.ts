@@ -6,12 +6,9 @@ import {
   updateNote
 } from '../services/note.service.js'
 
-import { parseId } from '../util/validateId.js'
+import { idSchema, noteSchema, updateNoteSchema } from '../schema/schemas.js'
 
 import type { Request, Response } from 'express'
-import type { NoteDTO, NoteUserId } from '../schema/schemas.js'
-
-const allowedFields = ['title', 'content', 'category', 'color']
 
 const getAll = async (req: Request, res: Response) => {
   try {
@@ -25,9 +22,7 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
+    const id = idSchema.parse(req.params.id)
 
     const response = await findNoteById(id)
 
@@ -44,26 +39,9 @@ const getById = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
   try {
-    const body: NoteDTO & NoteUserId = { ...req.body }
+    const data = noteSchema.parse(req.body)
 
-    if (body.title === undefined) {
-      return res.status(400).json({ message: 'Título é obrigatório' })
-    }
-
-    if (body.category === undefined) {
-      return res.status(400).json({ message: 'Categoria é obrigatório' })
-    }
-
-    if (body.userId === undefined) {
-      return res.status(400).json({ message: 'ID do usuário é obrigatório' })
-    }
-
-    const response = await createNote({
-      ...body,
-      content: body.content ?? '',
-      color: body.color
-    })
-
+    const response = await createNote(data)
     return res.status(201).json(response)
   } catch (error) {
     console.log(error)
@@ -73,13 +51,8 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
-
-    const data: Partial<NoteDTO> = Object.fromEntries(
-      Object.entries(req.body).filter(([key]) => allowedFields.includes(key))
-    )
+    const id = idSchema.parse(req.params.id)
+    const data = updateNoteSchema.parse(req.body)
 
     const response = await updateNote(id, data)
 
@@ -96,9 +69,7 @@ const update = async (req: Request, res: Response) => {
 
 const remove = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
+    const id = idSchema.parse(req.params.id)
 
     const response = await deleteNote(id)
 

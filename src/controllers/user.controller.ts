@@ -6,12 +6,9 @@ import {
   updateUser
 } from '../services/user.service.js'
 
-import { parseId } from '../util/validateId.js'
+import { idSchema, updateUserSchema, userSchema } from '../schema/schemas.js'
 
 import type { Request, Response } from 'express'
-import type { UserDTO } from '../schema/schemas.js'
-
-const allowedFields = ['name', 'email', 'password']
 
 const getAll = async (req: Request, res: Response) => {
   try {
@@ -25,9 +22,7 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
+    const id = idSchema.parse(req.params.id)
 
     const response = await findUserById(id)
 
@@ -44,19 +39,7 @@ const getById = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
   try {
-    const data: UserDTO = { ...req.body }
-
-    if (data.name === undefined) {
-      return res.status(400).json({ message: 'Nome é obrigatório' })
-    }
-
-    if (data.email === undefined) {
-      return res.status(400).json({ message: 'E-mail é obrigatório' })
-    }
-
-    if (data.password === undefined) {
-      return res.status(400).json({ message: 'Senha é obrigatório' })
-    }
+    const data = userSchema.parse(req.body)
 
     const response = await createUser(data)
 
@@ -69,13 +52,8 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
-
-    const data: Partial<UserDTO> = Object.fromEntries(
-      Object.entries(req.body).filter(([key]) => allowedFields.includes(key))
-    )
+    const id = idSchema.parse(req.params.id)
+    const data = updateUserSchema.parse(req.body)
 
     const response = await updateUser(id, data)
 
@@ -92,9 +70,7 @@ const update = async (req: Request, res: Response) => {
 
 const remove = async (req: Request, res: Response) => {
   try {
-    const id = parseId(req.params.id)
-
-    if (!id) return res.status(400).json({ message: 'ID Inválido' })
+    const id = idSchema.parse(req.params.id)
 
     const response = await deleteUser(id)
 

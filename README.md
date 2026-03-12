@@ -310,7 +310,7 @@ DELETE /users/${id}
 - [x] Banco de dados PostgreSQL
 - [x] Uso de ORM (Prisma)
 - [ ] Autenticação com JWT
-- [ ] Validação com Zod
+- [x] Validação com Zod
 - [ ] Padronização do código com ESLint e Prettier
 - [ ] Tratamento global de erros
 - [ ] Filtro de dados

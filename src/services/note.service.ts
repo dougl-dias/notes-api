@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma.js'
 
 import type { Note } from '../generated/prisma/client.js'
-import type { NoteDTO, NoteUserId } from '../schema/schemas.js'
+import type { CreateNoteDTO, UpdateNoteDTO } from '../schema/schemas.js'
 
 const findAllNotes = async (): Promise<Note[]> => {
   return prisma.note.findMany()
@@ -13,13 +13,13 @@ const findNoteById = async (id: number): Promise<Note | null> => {
   })
 }
 
-const createNote = async (data: NoteDTO & NoteUserId): Promise<Note> => {
+const createNote = async (data: CreateNoteDTO): Promise<Note> => {
   return prisma.note.create({
     data
   })
 }
 
-const updateNote = async (id: number, data: any): Promise<Note | null> => {
+const updateNote = async (id: number, data: UpdateNoteDTO): Promise<Note | null> => {
   const note = await findNoteById(id)
   if (!note) return null
 
