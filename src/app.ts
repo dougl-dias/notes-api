@@ -1,11 +1,19 @@
 import express from 'express'
 import type { Request, Response } from 'express'
 
+import cors from 'cors'
+
 import noteRouter from './routes/note.route.js'
 import userRouter from './routes/user.route.js'
 
 // Inicialização
 const app = express()
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173'
+  })
+)
 
 app.use(express.json())
 
