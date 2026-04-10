@@ -8,36 +8,31 @@ import {
 
 import { idSchema, updateUserSchema, userSchema } from '../schema/schemas.js'
 
-import type { Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 
-const getAll = async (req: Request, res: Response) => {
+const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const response = await findAllUsers()
+
     return res.status(200).json(response)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: error })
+    next(error)
   }
 }
 
-const getById = async (req: Request, res: Response) => {
+const getById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = idSchema.parse(req.params.id)
 
     const response = await findUserById(id)
 
-    if (!response) {
-      return res.status(404).json({ message: 'Usuário não encontrado' })
-    }
-
     return res.status(200).json(response)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: error })
+    next(error)
   }
 }
 
-const create = async (req: Request, res: Response) => {
+const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = userSchema.parse(req.body)
 
@@ -45,43 +40,32 @@ const create = async (req: Request, res: Response) => {
 
     return res.status(201).json(response)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: error })
+    next(error)
   }
 }
 
-const update = async (req: Request, res: Response) => {
+const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = idSchema.parse(req.params.id)
     const data = updateUserSchema.parse(req.body)
 
     const response = await updateUser(id, data)
 
-    if (!response) {
-      return res.status(404).json({ message: 'Usuário não encontrado' })
-    }
-
     return res.status(200).json(response)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: error })
+    next(error)
   }
 }
 
-const remove = async (req: Request, res: Response) => {
+const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = idSchema.parse(req.params.id)
 
-    const response = await deleteUser(id)
-
-    if (!response) {
-      return res.status(404).json({ message: 'Usuário não encontrado' })
-    }
+    await deleteUser(id)
 
     return res.status(204).send()
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: error })
+    next(error)
   }
 }
 

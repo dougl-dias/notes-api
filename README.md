@@ -311,6 +311,6 @@ DELETE /users/${id}
 - [x] Uso de ORM (Prisma)
 - [ ] Autenticação com JWT
 - [x] Validação com Zod
-- [ ] Padronização do código com ESLint e Prettier
-- [ ] Tratamento global de erros
+- [x] Padronização do código com ESLint e Prettier
+- [x] Tratamento global de erros
 - [x] Filtro de dados e paginação

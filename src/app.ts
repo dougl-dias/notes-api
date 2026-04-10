@@ -6,14 +6,12 @@ import cors from 'cors'
 import noteRouter from './routes/note.route.js'
 import userRouter from './routes/user.route.js'
 
+import { errorMiddleware } from './middleware/error.middleware.js'
+
 // Inicialização
 const app = express()
 
-app.use(
-  cors({
-    origin: 'http://localhost:5173'
-  })
-)
+app.use(cors())
 
 app.use(express.json())
 
@@ -24,5 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/notes', noteRouter)
 app.use('/users', userRouter)
+
+app.use(errorMiddleware)
 
 export default app

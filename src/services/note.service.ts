@@ -2,6 +2,7 @@ import { prisma } from '../lib/prisma.js'
 
 import type { Note, Prisma } from '../generated/prisma/client.js'
 import type { CreateNoteDTO, NoteFilterDTO, UpdateNoteDTO } from '../schema/schemas.js'
+import { NotFoundError } from '../middleware/error.middleware.js'
 
 const findAllNotes = async (filters: NoteFilterDTO): Promise<Note[]> => {
   const { search, color, category, page, limit } = filters
@@ -37,9 +38,15 @@ const findAllNotes = async (filters: NoteFilterDTO): Promise<Note[]> => {
 }
 
 const findNoteById = async (id: number): Promise<Note | null> => {
-  return prisma.note.findUnique({
+  const note = await prisma.note.findUnique({
     where: { id }
   })
+
+  if (!note) {
+    throw new NotFoundError('Anotação não encontrada')
+  }
+
+  return note
 }
 
 const createNote = async (data: CreateNoteDTO): Promise<Note> => {
@@ -49,8 +56,7 @@ const createNote = async (data: CreateNoteDTO): Promise<Note> => {
 }
 
 const updateNote = async (id: number, data: UpdateNoteDTO): Promise<Note | null> => {
-  const note = await findNoteById(id)
-  if (!note) return null
+  await findNoteById(id)
 
   return prisma.note.update({
     where: { id },
@@ -59,8 +65,7 @@ const updateNote = async (id: number, data: UpdateNoteDTO): Promise<Note | null>
 }
 
 const deleteNote = async (id: number): Promise<Note | null> => {
-  const note = await findNoteById(id)
-  if (!note) return null
+  await findNoteById(id)
 
   return prisma.note.delete({
     where: { id }

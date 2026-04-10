@@ -8,9 +8,15 @@ const findAllUsers = async (): Promise<User[]> => {
 }
 
 const findUserById = async (id: number): Promise<User | null> => {
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id }
   })
+
+  if (!user) {
+    throw new Error('Usuário não encontrado')
+  }
+
+  return user
 }
 
 const createUser = async (data: CreateUserDTO): Promise<User> => {
@@ -20,8 +26,7 @@ const createUser = async (data: CreateUserDTO): Promise<User> => {
 }
 
 const updateUser = async (id: number, data: UpdateUserDTO): Promise<User | null> => {
-  const user = await findUserById(id)
-  if (!user) return null
+  await findUserById(id)
 
   return prisma.user.update({
     where: { id },
@@ -30,8 +35,7 @@ const updateUser = async (id: number, data: UpdateUserDTO): Promise<User | null>
 }
 
 const deleteUser = async (id: number): Promise<User | null> => {
-  const user = await findUserById(id)
-  if (!user) return null
+  await findUserById(id)
 
   return prisma.user.delete({
     where: { id }
